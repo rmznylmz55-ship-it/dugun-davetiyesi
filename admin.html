@@ -1,0 +1,1122 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Admin Panel - Düğün Davetiyesi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Marcellus&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0A0E1A;
+  --bg2:#111827;
+  --bg3:#1A2438;
+  --gold:#D4A84B;
+  --gold-dim:#A87A28;
+  --text:#E8EAF0;
+  --text-dim:#8A9BB5;
+  --border:rgba(232,234,240,.08);
+  --danger:#EF4444;
+  --success:#22C55E;
+  --sidebar-w:240px;
+  --header-h:56px;
+}
+body{
+  background:var(--bg);color:var(--text);
+  font-family:'Inter',sans-serif;font-weight:300;
+  -webkit-font-smoothing:antialiased;
+}
+input,textarea,select,button{font-family:inherit}
+
+/* LOGIN SCREEN */
+.login-screen{
+  position:fixed;inset:0;z-index:999;
+  display:flex;align-items:center;justify-content:center;
+  background:var(--bg);
+  transition:opacity .5s ease;
+}
+.login-screen.is-hidden{opacity:0;pointer-events:none}
+.login-card{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:16px;padding:2.5rem 2rem;
+  width:100%;max-width:380px;text-align:center;
+}
+.login-card h1{
+  font-family:'Marcellus',serif;font-size:1.3rem;
+  color:var(--gold);margin-bottom:.3rem;font-weight:400;
+}
+.login-card p{font-size:.75rem;color:var(--text-dim);margin-bottom:1.5rem}
+.login-card .field{margin-bottom:1rem;text-align:left}
+.login-card .field label{
+  display:block;font-size:.6rem;letter-spacing:.15em;
+  text-transform:uppercase;color:var(--gold);margin-bottom:.3rem;
+}
+.login-card .field input{
+  width:100%;padding:.65rem .8rem;border-radius:8px;
+  border:1px solid var(--border);background:rgba(10,14,26,.4);
+  color:var(--text);font-size:.85rem;
+}
+.login-card .field input:focus{outline:1px solid var(--gold)}
+.login-error{color:var(--danger);font-size:.75rem;margin-top:.5rem;display:none}
+
+/* LAYOUT */
+.admin-wrap{display:none}
+.admin-wrap.is-visible{display:flex;height:100vh;overflow:hidden}
+
+/* HEADER */
+.admin-header{
+  position:fixed;top:0;left:0;right:0;z-index:50;
+  height:var(--header-h);background:var(--bg2);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;
+  padding:0 1.25rem;gap:1rem;
+}
+.admin-header .logo{
+  font-family:'Marcellus',serif;font-size:1rem;
+  color:var(--gold);white-space:nowrap;
+}
+.admin-header .logo span{color:var(--text-dim);font-family:'Inter';font-weight:300;font-size:.7rem}
+.hamburger{
+  display:none;background:none;border:none;color:var(--text);
+  cursor:pointer;padding:4px;
+}
+.hamburger svg{width:22px;height:22px}
+.header-right{margin-left:auto;display:flex;align-items:center;gap:.8rem}
+.header-right .status{
+  font-size:.65rem;color:var(--text-dim);
+  display:flex;align-items:center;gap:.35rem;
+}
+.header-right .status-dot{
+  width:6px;height:6px;border-radius:50%;background:var(--success);
+}
+.header-right .btn-logout{
+  background:none;border:1px solid var(--border);color:var(--text-dim);
+  padding:.4rem .8rem;border-radius:6px;cursor:pointer;
+  font-size:.7rem;transition:all .2s;
+}
+.header-right .btn-logout:hover{border-color:var(--danger);color:var(--danger)}
+
+/* SIDEBAR */
+.sidebar{
+  position:fixed;top:var(--header-h);left:0;bottom:0;z-index:40;
+  width:var(--sidebar-w);background:var(--bg3);
+  border-right:1px solid var(--border);
+  overflow-y:auto;padding:.5rem 0;
+  transition:transform .3s ease;
+}
+.sidebar::-webkit-scrollbar{width:3px}
+.sidebar::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+.sidebar-group{margin-bottom:.25rem}
+.sidebar-group-title{
+  font-size:.55rem;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--text-dim);padding:.5rem 1rem .3rem;opacity:.5;
+}
+.sidebar-item{
+  display:flex;align-items:center;gap:.6rem;
+  padding:.5rem 1rem;cursor:pointer;
+  font-size:.78rem;color:var(--text-dim);
+  transition:all .2s;border:none;background:none;width:100%;text-align:left;
+}
+.sidebar-item:hover{color:var(--text);background:rgba(212,168,75,.06)}
+.sidebar-item.is-active{
+  color:var(--gold);background:rgba(212,168,75,.1);
+  border-right:2px solid var(--gold);
+}
+.sidebar-item svg{width:16px;height:16px;flex-shrink:0;opacity:.7}
+.sidebar-item.is-active svg{opacity:1}
+
+/* CONTENT */
+.content{
+  margin-top:var(--header-h);margin-left:var(--sidebar-w);
+  flex:1;overflow-y:auto;padding:1.5rem 2rem 4rem;
+  min-height:100vh;
+}
+.content::-webkit-scrollbar{width:4px}
+.content::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+.section{display:none}
+.section.is-active{display:block}
+.section-title{
+  font-family:'Marcellus',serif;font-size:1.2rem;
+  color:var(--text);margin-bottom:.3rem;font-weight:400;
+}
+.section-desc{font-size:.75rem;color:var(--text-dim);margin-bottom:1.5rem}
+
+/* CARDS */
+.card{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:12px;padding:1.5rem;margin-bottom:1rem;
+}
+.card-title{
+  font-size:.7rem;letter-spacing:.15em;text-transform:uppercase;
+  color:var(--gold);margin-bottom:1rem;font-weight:500;
+}
+.card-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem}
+.card-row.three{grid-template-columns:1fr 1fr 1fr}
+.card-row.full{grid-template-columns:1fr}
+
+/* FORM */
+.field{margin-bottom:1rem}
+.field.full{margin-bottom:1rem}
+.field label{
+  display:block;font-size:.6rem;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--text-dim);margin-bottom:.3rem;font-weight:400;
+}
+.field .hint{font-size:.6rem;color:var(--text-dim);opacity:.5;margin-top:.2rem}
+.field input[type=text],.field input[type=number],.field input[type=url],.field input[type=datetime-local],.field input[type=date],.field textarea,.field select{
+  width:100%;padding:.6rem .75rem;border-radius:8px;
+  border:1px solid var(--border);background:rgba(10,14,26,.3);
+  color:var(--text);font-size:.85rem;transition:border .2s;
+}
+.field textarea{resize:vertical;min-height:70px}
+.field select{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%238A9BB5' fill='none' stroke-width='1.5'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right .75rem center;padding-right:2rem}
+.field input:focus,.field textarea:focus,.field select:focus{outline:none;border-color:var(--gold);box-shadow:0 0 10px rgba(212,168,75,.05)}
+.field input::placeholder,.field textarea::placeholder{color:var(--text-dim);opacity:.3}
+
+/* TOGGLE */
+.toggle-wrap{display:flex;align-items:center;gap:.6rem}
+.toggle{
+  position:relative;width:36px;height:20px;cursor:pointer;
+  background:rgba(232,234,240,.1);border-radius:10px;
+  transition:background .25s;border:none;
+}
+.toggle.is-on{background:var(--gold)}
+.toggle::after{
+  content:"";position:absolute;top:2px;left:2px;
+  width:16px;height:16px;border-radius:50%;background:var(--text);
+  transition:transform .25s;
+}
+.toggle.is-on::after{transform:translateX(16px);background:var(--bg)}
+
+/* DYNAMIC LIST */
+.dynamic-list{display:flex;flex-direction:column;gap:.5rem}
+.dynamic-item{
+  display:flex;gap:.5rem;align-items:flex-start;
+  background:rgba(10,14,26,.2);border:1px solid var(--border);
+  border-radius:8px;padding:.75rem;position:relative;
+}
+.dynamic-item.fields-2 > input:first-child{flex:0 0 110px}
+.dynamic-item.fields-2 > input:nth-child(2){flex:1}
+.dynamic-item.fields-2 > input:nth-child(3),
+.dynamic-item > input{flex:1}
+.dynamic-item .item-actions{
+  display:flex;gap:.2rem;flex-shrink:0;margin-top:.1rem;
+}
+.dynamic-item .item-actions button{
+  background:none;border:none;color:var(--text-dim);cursor:pointer;
+  padding:2px 4px;border-radius:4px;transition:all .2s;
+  display:flex;align-items:center;justify-content:center;
+}
+.dynamic-item .item-actions button:hover{color:var(--text);background:rgba(232,234,240,.05)}
+.dynamic-item .item-actions button.danger:hover{color:var(--danger)}
+.btn-add{
+  display:inline-flex;align-items:center;gap:.4rem;
+  padding:.45rem 1rem;border-radius:8px;border:1px dashed var(--gold);
+  color:var(--gold);background:transparent;cursor:pointer;
+  font-size:.75rem;margin-top:.5rem;transition:all .2s;
+}
+.btn-add:hover{background:rgba(212,168,75,.08)}
+
+/* BUTTONS */
+.btn{
+  display:inline-flex;align-items:center;gap:.5rem;
+  padding:.6rem 1.2rem;border-radius:8px;border:none;
+  font-size:.78rem;cursor:pointer;transition:all .2s;
+  font-weight:400;
+}
+.btn-gold{background:var(--gold);color:var(--bg)}
+.btn-gold:hover{background:#C49A3F}
+.btn-outline{background:transparent;border:1px solid var(--border);color:var(--text-dim)}
+.btn-outline:hover{border-color:var(--gold);color:var(--gold)}
+.btn-danger{background:var(--danger);color:white}
+.btn-danger:hover{background:#DC2626}
+.btn-sm{padding:.4rem .8rem;font-size:.7rem}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.actions-row{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:.5rem}
+
+/* TOAST */
+.toast-container{
+  position:fixed;top:calc(var(--header-h) + .75rem);right:1rem;z-index:100;
+  display:flex;flex-direction:column;gap:.5rem;pointer-events:none;
+}
+.toast{
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:8px;padding:.7rem 1rem;
+  font-size:.78rem;color:var(--text);
+  box-shadow:0 4px 20px rgba(0,0,0,.3);
+  animation:slideIn .3s ease;pointer-events:auto;
+  max-width:320px;
+}
+.toast.success{border-left:3px solid var(--success)}
+.toast.error{border-left:3px solid var(--danger)}
+@keyframes slideIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
+
+/* STATS GRID */
+.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+.stat-card{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:12px;padding:1.2rem;text-align:center;
+}
+.stat-card .num{
+  font-family:'Marcellus',serif;font-size:1.6rem;color:var(--gold);
+}
+.stat-card .label{font-size:.65rem;color:var(--text-dim);margin-top:.2rem}
+
+/* MOBILE */
+@media(max-width:1023px){
+  :root{--sidebar-w:220px}
+  .content{padding:1rem 1.25rem}
+}
+@media(max-width:639px){
+  .hamburger{display:block}
+  .sidebar{
+    transform:translateX(-100%);
+    width:260px;
+  }
+  .sidebar.is-open{transform:translateX(0)}
+  .content{margin-left:0;padding:.8rem 1rem}
+  .card-row{grid-template-columns:1fr}
+  .card-row.three{grid-template-columns:1fr}
+  .stats-grid{grid-template-columns:1fr}
+  .dynamic-item.fields-2{flex-direction:column}
+  .dynamic-item.fields-2 > input:first-child{flex:1}
+  .header-right .status{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN SCREEN -->
+<div class="login-screen" id="loginScreen">
+  <div class="login-card">
+    <h1>✦ Admin Panel</h1>
+    <p>Düğün Davetiyesi Yönetim Sistemi</p>
+    <div class="field">
+      <label>Şifre</label>
+      <input type="password" id="loginPass" placeholder="Şifrenizi girin" autofocus>
+    </div>
+    <button class="btn btn-gold" id="loginBtn" style="width:100%;justify-content:center">Giriş Yap</button>
+    <p class="login-error" id="loginError">Hatalı şifre!</p>
+  </div>
+</div>
+
+<!-- ADMIN PANEL -->
+<div class="admin-wrap" id="adminWrap">
+
+  <!-- HEADER -->
+  <header class="admin-header">
+    <button class="hamburger" id="hamburgerBtn" aria-label="Menü">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+    </button>
+    <div class="logo">✦ Davetiye <span>Admin</span></div>
+    <div class="header-right">
+      <div class="status"><span class="status-dot"></span> Oturum Açık</div>
+      <button class="btn-logout" id="logoutBtn">Çıkış</button>
+    </div>
+  </header>
+
+  <!-- SIDEBAR -->
+  <nav class="sidebar" id="sidebar"></nav>
+
+  <!-- CONTENT -->
+  <main class="content" id="content"></main>
+
+</div>
+
+<!-- TOAST -->
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+(function(){
+"use strict";
+
+const PASSWORD = 'admin';
+const STORAGE_KEY = 'davetiye_admin_data';
+const LOGIN_KEY = 'davetiye_admin_login';
+
+/* ===== SECTIONS CONFIG ===== */
+const SECTIONS = [
+  {
+    id:'general', icon:'settings', label:'Genel',
+    fields:[
+      {key:'etkinlik_turu', label:'Etkinlik Türü', type:'text'},
+      {key:'ana_baslik', label:'Ana Başlık', type:'text'},
+      {key:'davet_metni', label:'Davet Metni', type:'textarea'},
+      {key:'acilis_buton_metni', label:'Açılış Buton Metni', type:'text', default:'Davetiyeyi Aç'},
+      {key:'2_acilis_buton_metni', label:'Açılış Buton Metni (Index)', type:'text'},
+    ]
+  },
+  {
+    id:'couple', icon:'favorite', label:'Çift & Aileler',
+    fields:[
+      {key:'davet_sahibi_isimleri', label:'Davet Sahibi İsimleri', type:'text'},
+      {key:'5_davet_sahibi_isimleri', label:'İsimler (Index)', type:'text'},
+      {key:'gelin.ad', label:'Gelin Adı', type:'text'},
+      {key:'gelin.soyad', label:'Gelin Soyadı', type:'text'},
+      {key:'gelin.anne', label:'Gelin Annesi', type:'text'},
+      {key:'gelin.baba', label:'Gelin Babası', type:'text'},
+      {key:'damat.ad', label:'Damat Adı', type:'text'},
+      {key:'damat.soyad', label:'Damat Soyadı', type:'text'},
+      {key:'damat.anne', label:'Damat Annesi', type:'text'},
+      {key:'damat.baba', label:'Damat Babası', type:'text'},
+      {key:'aileler', label:'Aileler Metni', type:'text'},
+    ],
+    desc:'Gelin ve damat ile aile bilgileri'
+  },
+  {
+    id:'date', icon:'calendar_today', label:'Tarih & Sayım',
+    fields:[
+      {key:'tarih', label:'Hedef Tarih (ISO)', type:'datetime-local'},
+      {key:'gun', label:'Gün Adı', type:'text'},
+      {key:'12_hedef_zaman_damgasi', label:'Hedef Zaman (Index)', type:'datetime-local'},
+      {key:'13_sayac_formati', label:'Sayaç Formatı', type:'select', options:['tam','sadece_saat_dakika_saniye']},
+    ],
+    desc:'Düğün tarihi ve geri sayım ayarları'
+  },
+  {
+    id:'program', icon:'schedule', label:'Program Akışı', dynamic:true,
+    fields:[
+      {key:'saat', label:'Saat', type:'text', placeholder:'19:00'},
+      {key:'baslik', label:'Başlık', type:'text', placeholder:'Etkinlik adı'},
+    ],
+    desc:'Düğün günü program akışı'
+  },
+  {
+    id:'venue', icon:'location_on', label:'Mekan & Konum',
+    fields:[
+      {key:'mekan.adi', label:'Mekan Adı', type:'text'},
+      {key:'mekan.adres', label:'Adres', type:'textarea'},
+      {key:'mekan.harita_linki', label:'Harita Linki', type:'url'},
+      {key:'mekan.kiyafet_kodu', label:'Kıyafet Kodu', type:'text'},
+      {key:'15_mekan_adi', label:'Mekan Adı (Index)', type:'text'},
+      {key:'16_acik_adres', label:'Adres (Index)', type:'textarea'},
+      {key:'17_harita_navigasyon_linki', label:'Harita Linki (Index)', type:'url'},
+      {key:'18_kiyafet_kodu', label:'Kıyafet Kodu (Index)', type:'text'},
+    ],
+    desc:'Mekan ve konum bilgileri'
+  },
+  {
+    id:'gallery', icon:'photo_library', label:'Galeri', urlList:true,
+    fields:[
+      {key:'galeri.fotograflar', label:'Fotoğraf URL\'leri', type:'url'},
+      {key:'galeri.akis_hizi', label:'Akış Hızı', type:'select', options:['yavas','normal','hizli']},
+      {key:'10_fotograf_listesi_marquee', label:'Fotoğraflar (Index)', type:'url'},
+      {key:'11_galeri_akis_hizi', label:'Akış Hızı (Index)', type:'select', options:['yavas','normal','hizli']},
+    ],
+    desc:'Fotoğraf galerisi yönetimi'
+  },
+  {
+    id:'content', icon:'article', label:'İçerik',
+    fields:[
+      {key:'besmele', label:'Besmele Metni', type:'text'},
+      {key:'ayet.metin', label:'Ayet Metni (Arapça)', type:'text'},
+      {key:'ayet.meal', label:'Ayet Meali', type:'text'},
+      {key:'ayet.sure', label:'Sure Bilgisi', type:'text'},
+    ],
+    desc:'Besmele, ayet ve dini içerikler',
+    extraList:{
+      key:'dualar', label:'Dualar', placeholder:'Dua metni...'
+    }
+  },
+  {
+    id:'faq', icon:'help', label:'SSS', dynamic:true,
+    fields:[
+      {key:'soru', label:'Soru', type:'text'},
+      {key:'cevap', label:'Cevap', type:'textarea'},
+    ],
+    desc:'Sık sorulan sorular'
+  },
+  {
+    id:'rsvp', icon:'reply', label:'RSVP',
+    fields:[
+      {key:'rsvp.son_tarih', label:'Son Tarih', type:'date'},
+      {key:'rsvp.hashtag', label:'Hashtag', type:'text'},
+      {key:'20_katilim_ve_rsvp.son_tarih', label:'Son Tarih (Index)', type:'date'},
+      {key:'20_katilim_ve_rsvp.hashtag', label:'Hashtag (Index)', type:'text'},
+    ],
+    desc:'Katılım bildirimi ayarları',
+    extraList:{
+      key:'rsvp.secenekler', label:'Katılım Seçenekleri', placeholder:'Seçenek metni...'
+    },
+    toggles:[
+      {key:'rsvp.alerji_menusu_aktif', label:'Alerji Menüsü Aktif'},
+      {key:'20_katilim_ve_rsvp.alerji_menu_aktif', label:'Alerji Menüsü (Index)'},
+    ],
+    extraFields:[
+      {key:'20_katilim_ve_rsvp.aile_isimleri', label:'Aile İsimleri (Index)', type:'text'},
+      {key:'20_katilim_ve_rsvp.sosyal_medya_hashtag', label:'Sosyal Medya Hashtag (Index)', type:'text'},
+    ]
+  },
+  {
+    id:'theme', icon:'palette', label:'Tema & Medya',
+    fields:[
+      {key:'arka_plan.tip', label:'Arka Plan Tipi', type:'select', options:['image','video','none']},
+      {key:'arka_plan.url', label:'Arka Plan URL', type:'url'},
+      {key:'muzik.url', label:'Fon Müziği URL', type:'url'},
+      {key:'1_animasyon_tipi', label:'Animasyon Tipi (Index)', type:'text'},
+      {key:'7_arka_plan_medya_tipi', label:'Medya Tipi (Index)', type:'select', options:['image','video','none']},
+      {key:'8_arka_plan_medya_url', label:'Medya URL (Index)', type:'url'},
+      {key:'9_fon_muzigi_url', label:'Fon Müziği URL (Index)', type:'url'},
+    ],
+    desc:'Görsel ve işitsel medya ayarları'
+  },
+  {
+    id:'stats', icon:'bar_chart', label:'İstatistikler',
+    fields:[
+      {key:'istatistikler.gonderilen', label:'Gönderilen', type:'number'},
+      {key:'istatistikler.goruntuleyen', label:'Görüntüleyen', type:'number'},
+      {key:'istatistikler.bildirim_abone', label:'Bildirim Abone', type:'number'},
+      {key:'op_numarasi', label:'OP Numarası', type:'text'},
+      {key:'olusturan', label:'Oluşturan', type:'text'},
+      {key:'yayin_durumu', label:'Yayın Durumu', type:'select', options:['aktif','pasif','taslak']},
+    ],
+    desc:'İstatistik ve künye bilgileri'
+  },
+  {
+    id:'data', icon:'storage', label:'Veri İşlemleri', dataOps:true,
+    desc:'Verileri dışa aktar, içe aktar veya sıfırla'
+  },
+];
+
+/* ===== SIDEBAR ICONS ===== */
+function iconSvg(name){
+  const icons = {
+    settings:'<path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 00.12-.61l-1.92-3.32a.49.49 0 00-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.484.484 0 00-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96a.49.49 0 00-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.07.62-.07.94s.02.64.07.94l-2.03 1.58a.49.49 0 00-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6A3.6 3.6 0 1115.6 12 3.611 3.611 0 0112 15.6z"/>',
+    favorite:'<path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>',
+    calendar_today:'<path d="M19 3h-1V1h-2v2H8V1H6v2H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V5a2 2 0 00-2-2zm0 16H5V8h14v11z"/>',
+    schedule:'<path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>',
+    location_on:'<path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 110-5 2.5 2.5 0 010 5z"/>',
+    photo_library:'<path d="M22 16V4a2 2 0 00-2-2H8a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2zm-11-4l2.03 2.71L16 11l4 5H8l3-4zM2 6v14a2 2 0 002 2h14v-2H4V6H2z"/>',
+    article:'<path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6zM6 20V4h7v5h5v11H6zm2-6h8v2H8v-2zm0-3h8v2H8v-2zm0 6h5v2H8v-2z"/>',
+    help:'<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/>',
+    reply:'<path d="M10 9V5l-7 7 7 7v-4.1c5 0 8.5 1.6 11 5.1-1-5-4-10-11-11z"/>',
+    palette:'<path d="M12 3a9 9 0 000 18c.83 0 1.5-.67 1.5-1.5 0-.39-.15-.74-.39-1.01-.23-.26-.38-.61-.38-1 0-.83.67-1.5 1.5-1.5H16c2.76 0 5-2.24 5-5 0-4.42-4.03-8-9-8zm-5.5 9c-.83 0-1.5-.67-1.5-1.5S5.67 9 6.5 9 8 9.67 8 10.5 7.33 12 6.5 12zm3-4C8.67 8 8 7.33 8 6.5S8.67 5 9.5 5s1.5.67 1.5 1.5S10.33 8 9.5 8zm5 0c-.83 0-1.5-.67-1.5-1.5S13.67 5 14.5 5s1.5.67 1.5 1.5S15.33 8 14.5 8zm3 4c-.83 0-1.5-.67-1.5-1.5S16.67 9 17.5 9s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/>',
+    bar_chart:'<path d="M5 9.2h3V19H5V9.2zM10.6 5h2.8v14h-2.8V5zm5.6 8H19v6h-2.8v-6z"/>',
+    storage:'<path d="M2 20h20v-4H2v4zm2-3h2v2H4v-2zM2 4v4h20V4H2zm4 3H4V5h2v2zm-4 7h20v-4H2v4zm2-3h2v2H4v-2z"/>',
+  };
+  return '<svg viewBox="0 0 24 24" fill="currentColor">'+(icons[name]||icons.settings)+'</svg>';
+}
+
+/* ===== STATE ===== */
+let data = null;
+
+function getDefaultData(){
+  return {
+    meta:{versiyon:'1.0',baslik:'',dil:'tr-TR',tema:'gece-uzay',olusturma_tarihi:new Date().toISOString().slice(0,10)},
+    besmele:'Bismillahirrahmanirrahim',
+    ayet:{metin:'',meal:'',sure:''},
+    dualar:[],
+    etkinlik_turu:'Düğün Töreni',
+    davet_sahibi_isimleri:'',
+    ana_baslik:'',
+    davet_metni:'',
+    gelin:{ad:'',soyad:'',anne:'',baba:''},
+    damat:{ad:'',soyad:'',anne:'',baba:''},
+    aileler:'',
+    tarih:'',
+    gun:'',
+    mekan:{adi:'',adres:'',harita_linki:'',kiyafet_kodu:''},
+    program:[],
+    galeri:{fotograflar:[],akis_hizi:'normal'},
+    arka_plan:{tip:'image',url:''},
+    muzik:{url:''},
+    sss:[],
+    rsvp:{son_tarih:'',secenekler:[],alerji_menusu_aktif:false,hashtag:''},
+    op_numarasi:'',
+    olusturan:'RMZN AI',
+    istatistikler:{gonderilen:0,goruntuleyen:0,bildirim_abone:0},
+    yayin_durumu:'aktif'
+  };
+}
+
+/* ===== SET/GET NESTED ===== */
+function getNested(obj, path){
+  return path.split('.').reduce((o,k)=>o&&o[k]!==undefined?o[k]:'', obj);
+}
+function setNested(obj, path, val){
+  const keys = path.split('.');
+  let o = obj;
+  for(let i=0; i<keys.length-1; i++){
+    if(!o[keys[i]] || typeof o[keys[i]] !== 'object') o[keys[i]] = {};
+    o = o[keys[i]];
+  }
+  o[keys[keys.length-1]] = val;
+}
+
+/* ===== LOAD DATA ===== */
+async function loadData(){
+  const stored = localStorage.getItem(STORAGE_KEY);
+  if(stored){return JSON.parse(stored)}
+
+  let main = null, idx = null;
+  try{
+    const r = await fetch('data.json',{cache:'no-store'});
+    if(r.ok) main = await r.json();
+  }catch(e){}
+  try{
+    const r = await fetch('davetiye_index.json',{cache:'no-store'});
+    if(r.ok) idx = await r.json();
+  }catch(e){}
+
+  const merged = main || getDefaultData();
+  if(idx){
+    merged.op_numarasi = idx.op_numarasi || merged.op_numarasi;
+    merged.olusturan = idx.olusturan || merged.olusturan;
+    merged.istatistikler = idx.istatistikler || merged.istatistikler;
+    merged.yayin_durumu = idx.yayin_durumu || merged.yayin_durumu;
+
+    const v = idx.veri || {};
+    const map = {
+      '3_etkinlik_turu':'etkinlik_turu','4_ana_baslik':'ana_baslik',
+      '5_davet_sahibi_isimleri':'davet_sahibi_isimleri','6_davet_metni':'davet_metni',
+      '12_hedef_zaman_damgasi':'tarih','14_program_akisi_semasi':'program',
+      '19_sss_bilgilendirme':'sss','20_katilim_ve_rsvp':'rsvp',
+    };
+    Object.keys(map).forEach(k => {if(v[k]) merged[map[k]] = v[k]});
+    if(v['5_gelin_adi'] && merged.gelin) merged.gelin.ad = v['5_gelin_adi'];
+    if(v['5_damat_adi'] && merged.damat) merged.damat.ad = v['5_damat_adi'];
+    if(v['15_mekan_adi'] && merged.mekan) merged.mekan.adi = v['15_mekan_adi'];
+    if(v['16_acik_adres'] && merged.mekan) merged.mekan.adres = v['16_acik_adres'];
+    if(v['17_harita_navigasyon_linki'] && merged.mekan) merged.mekan.harita_linki = v['17_harita_navigasyon_linki'];
+    if(v['18_kiyafet_kodu'] && merged.mekan) merged.mekan.kiyafet_kodu = v['18_kiyafet_kodu'];
+    if(v['10_fotograf_listesi_marquee']) merged['10_fotograf_listesi_marquee'] = v['10_fotograf_listesi_marquee'];
+    if(v['11_galeri_akis_hizi']) merged['11_galeri_akis_hizi'] = v['11_galeri_akis_hizi'];
+  }
+  return merged;
+}
+
+/* ===== SAVE ===== */
+function saveData(){
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data, null, 2));
+}
+
+/* ===== RENDER SIDEBAR ===== */
+function renderSidebar(){
+  const sb = document.getElementById('sidebar');
+  sb.innerHTML = SECTIONS.map(s =>
+    '<button class="sidebar-item" data-section="'+s.id+'">' +
+      iconSvg(s.icon) +
+      '<span>'+s.label+'</span>' +
+    '</button>'
+  ).join('');
+
+  sb.querySelectorAll('.sidebar-item').forEach(item => {
+    item.addEventListener('click', () => {
+      document.querySelectorAll('.sidebar-item').forEach(x=>x.classList.remove('is-active'));
+      item.classList.add('is-active');
+      document.querySelectorAll('.section').forEach(x=>x.classList.remove('is-active'));
+      const sec = document.getElementById('section-'+item.dataset.section);
+      if(sec) sec.classList.add('is-active');
+      if(window.innerWidth < 640) sb.classList.remove('is-open');
+    });
+  });
+}
+
+/* ===== RENDER CONTENT ===== */
+function renderContent(){
+  const content = document.getElementById('content');
+  content.innerHTML = SECTIONS.map(s => {
+    if(s.dataOps) return renderDataOps(s);
+    if(s.dynamic) return renderDynamicSection(s);
+    if(s.urlList) return renderUrlListSection(s);
+    return renderBasicSection(s);
+  }).join('');
+  content.querySelectorAll('.section').forEach(sec => sec.classList.remove('is-active'));
+  const first = content.querySelector('.section');
+  if(first) first.classList.add('is-active');
+}
+
+function renderBasicSection(s){
+  let html = '<div class="section" id="section-'+s.id+'">';
+  html += '<h2 class="section-title">'+s.label+'</h2>';
+  if(s.desc) html += '<p class="section-desc">'+s.desc+'</p>';
+  html += '<div class="card">';
+  html += '<div class="card-title">'+s.label+'</div>';
+  html += renderFields(s.fields);
+  if(s.toggles) html += renderToggles(s.toggles);
+  if(s.extraFields) html += renderFields(s.extraFields);
+  html += '<div class="actions-row" style="margin-top:1rem"><button class="btn btn-gold btn-save-section" data-section="'+s.id+'">Kaydet</button></div>';
+  html += '</div>';
+
+  if(s.extraList) html += renderSimpleList(s.extraList);
+
+  html += '</div>';
+  return html;
+}
+
+function renderDynamicSection(s){
+  let html = '<div class="section" id="section-'+s.id+'">';
+  html += '<h2 class="section-title">'+s.label+'</h2>';
+  if(s.desc) html += '<p class="section-desc">'+s.desc+'</p>';
+  html += '<div class="card">';
+  html += '<div class="card-title">'+s.label+'</div>';
+  html += '<div class="dynamic-list" data-listkey="'+s.id+'"></div>';
+  html += '<button class="btn-add btn-add-item" data-section="'+s.id+'">+ Yeni Ekle</button>';
+  html += '<div class="actions-row" style="margin-top:1rem"><button class="btn btn-gold btn-save-section" data-section="'+s.id+'">Kaydet</button></div>';
+  html += '</div></div>';
+  return html;
+}
+
+function renderUrlListSection(s){
+  let html = '<div class="section" id="section-'+s.id+'">';
+  html += '<h2 class="section-title">'+s.label+'</h2>';
+  if(s.desc) html += '<p class="section-desc">'+s.desc+'</p>';
+
+  html += '<div class="card">';
+  html += '<div class="card-title">URL Listesi</div>';
+  html += '<div class="dynamic-list" data-listkey="gallery_urls"></div>';
+  html += '<button class="btn-add btn-add-url">+ URL Ekle</button>';
+  html += '</div>';
+
+  html += '<div class="card">';
+  html += '<div class="card-title">Diğer Ayarlar</div>';
+  html += renderFields(s.fields.filter(f => f.key !== 'galeri.fotograflar' && f.key !== '10_fotograf_listesi_marquee'));
+  html += '<div class="actions-row" style="margin-top:1rem"><button class="btn btn-gold btn-save-section" data-section="'+s.id+'">Kaydet</button></div>';
+  html += '</div></div>';
+  return html;
+}
+
+function renderDataOps(s){
+  return '<div class="section" id="section-'+s.id+'">' +
+    '<h2 class="section-title">'+s.label+'</h2>' +
+    '<p class="section-desc">'+s.desc+'</p>' +
+    '<div class="card">' +
+      '<div class="card-title">Dışa Aktar</div>' +
+      '<p style="font-size:.8rem;color:var(--text-dim);margin-bottom:1rem">Tüm verileri JSON dosyası olarak indir.</p>' +
+      '<button class="btn btn-gold" id="exportBtn">📥 JSON İndir</button>' +
+    '</div>' +
+    '<div class="card">' +
+      '<div class="card-title">İçe Aktar</div>' +
+      '<p style="font-size:.8rem;color:var(--text-dim);margin-bottom:1rem">Daha önce dışa aktardığınız JSON dosyasını yükleyin.</p>' +
+      '<input type="file" accept=".json" id="importFile" style="margin-bottom:.8rem;font-size:.8rem;color:var(--text-dim)">' +
+      '<button class="btn btn-outline" id="importBtn">📂 JSON Yükle</button>' +
+    '</div>' +
+    '<div class="card">' +
+      '<div class="card-title">Sıfırla</div>' +
+      '<p style="font-size:.8rem;color:var(--text-dim);margin-bottom:1rem">Tüm verileri fabrika ayarlarına döndür. Bu işlem geri alınamaz.</p>' +
+      '<button class="btn btn-danger" id="resetBtn">⚠️ Verileri Sıfırla</button>' +
+    '</div>' +
+  '</div>';
+}
+
+/* ===== FIELD HELPERS ===== */
+function renderFields(fields){
+  return fields.map(f => {
+    let val = getNested(data, f.key);
+    if(f.type === 'datetime-local' && val){
+      try{val = new Date(val).toISOString().slice(0,16)}catch(e){}
+    }
+    if(f.type === 'date' && val){
+      try{val = new Date(val).toISOString().slice(0,10)}catch(e){}
+    }
+    const id = 'field-'+f.key.replace(/\./g,'-');
+
+    if(f.type === 'select'){
+      const opts = (f.options||[]).map(o =>
+        '<option value="'+o+'"'+(val===o?' selected':'')+'>'+o+'</option>'
+      ).join('');
+      return '<div class="field full">' +
+        '<label for="'+id+'">'+f.label+'</label>' +
+        '<select id="'+id+'" data-key="'+f.key+'">'+opts+'</select>' +
+        (f.placeholder ? '<div class="hint">'+f.placeholder+'</div>' : '') +
+      '</div>';
+    }
+    if(f.type === 'textarea'){
+      return '<div class="field full">' +
+        '<label for="'+id+'">'+f.label+'</label>' +
+        '<textarea id="'+id+'" data-key="'+f.key+'" placeholder="'+(f.placeholder||'')+'">'+(val||'')+'</textarea>' +
+      '</div>';
+    }
+    if(f.type === 'url'){
+      return '<div class="field full">' +
+        '<label for="'+id+'">'+f.label+'</label>' +
+        '<input type="url" id="'+id+'" data-key="'+f.key+'" value="'+(val||'')+'" placeholder="'+(f.placeholder||'https://...')+'">' +
+      '</div>';
+    }
+    return '<div class="field full">' +
+      '<label for="'+id+'">'+f.label+'</label>' +
+      '<input type="'+f.type+'" id="'+id+'" data-key="'+f.key+'" value="'+(val||'')+'" placeholder="'+(f.placeholder||'')+'">' +
+    '</div>';
+  }).join('');
+}
+
+function renderToggles(toggles){
+  return toggles.map(t => {
+    const val = getNested(data, t.key);
+    const id = 'toggle-'+t.key.replace(/\./g,'-');
+    return '<div class="field full">' +
+      '<div class="toggle-wrap">' +
+        '<button class="toggle'+(val?' is-on':'')+'" id="'+id+'" data-key="'+t.key+'" aria-label="'+t.label+'"></button>' +
+        '<label style="font-size:.75rem;margin:0;text-transform:none;letter-spacing:0;color:var(--text);cursor:pointer" for="'+id+'">'+t.label+'</label>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+function renderSimpleList(extra){
+  const items = getNested(data, extra.key) || [];
+  const id = 'list-'+extra.key.replace(/\./g,'-');
+  let html = '<div class="card">';
+  html += '<div class="card-title">'+extra.label+'</div>';
+  html += '<div class="dynamic-list" data-listkey="simple-'+extra.key+'">';
+  items.forEach((item,i) => {
+    html += '<div class="dynamic-item" data-index="'+i+'">' +
+      '<input type="text" value="'+(item||'')+'" placeholder="'+(extra.placeholder||'')+'" style="flex:1">' +
+      '<div class="item-actions">' +
+        '<button class="danger" data-action="remove-simple" title="Sil"><svg viewBox="0 0 24 24" fill="currentColor" width="16"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg></button>' +
+      '</div>' +
+    '</div>';
+  });
+  html += '</div>';
+  html += '<button class="btn-add btn-add-simple" data-key="'+extra.key+'" data-placeholder="'+(extra.placeholder||'')+'">+ Yeni Ekle</button>';
+  html += '<div class="actions-row" style="margin-top:1rem"><button class="btn btn-gold btn-save-section">Kaydet</button></div>';
+  html += '</div>';
+  return html;
+}
+
+/* ===== POPULATE DYNAMIC LISTS ===== */
+function populateDynamicLists(){
+  document.querySelectorAll('.dynamic-list[data-listkey]').forEach(list => {
+    const key = list.dataset.listkey;
+    let items = [];
+
+    if(key === 'gallery_urls'){
+      items = data.galeri?.fotograflar || data['10_fotograf_listesi_marquee'] || [];
+    } else if(key === 'simple-rsvp.secenekler'){
+      items = data.rsvp?.secenekler || data['20_katilim_ve_rsvp']?.secenekler || [];
+    } else if(key === 'simple-dualar'){
+      items = data.dualar || [];
+    } else {
+      const section = SECTIONS.find(s => s.id === key);
+      if(section){
+        const mapKey = section.id === 'program' ? 'program'
+                      : section.id === 'faq' ? 'sss'
+                      : section.id === 'gallery' ? 'galeri.fotograflar' : null;
+        items = mapKey ? getNested(data, mapKey) : [];
+        if(mapKey === 'program' && data['14_program_akisi_semasi'] && !items.length) items = data['14_program_akisi_semasi'];
+        if(mapKey === 'sss' && data['19_sss_bilgilendirme'] && !items.length) items = data['19_sss_bilgilendirme'];
+      }
+    }
+
+    list.innerHTML = items.map((item,i) => {
+      if(typeof item === 'string'){
+        return '<div class="dynamic-item" data-index="'+i+'">' +
+          '<input type="text" value="'+item+'" style="flex:1">' +
+          '<div class="item-actions">' +
+            '<button class="danger" data-action="remove-simple" title="Sil"><svg viewBox="0 0 24 24" fill="currentColor" width="16"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg></button>' +
+          '</div>' +
+        '</div>';
+      }
+      const section = SECTIONS.find(s => s.id === key);
+      const fields = section ? section.fields : [{key:'soru',label:'Soru',type:'text'},{key:'cevap',label:'Cevap',type:'textarea'}];
+      const isFaq = key === 'faq';
+      const f2Class = fields.length === 2 ? ' fields-2' : '';
+      return '<div class="dynamic-item'+f2Class+'" data-index="'+i+'">' +
+        fields.map(f => {
+          const val = item[f.key] || '';
+          if(f.type === 'textarea'){
+            return '<textarea placeholder="'+(f.placeholder||f.label)+'" data-fkey="'+f.key+'" style="flex:1;min-height:50px">'+val+'</textarea>';
+          }
+          return '<input type="text" value="'+val+'" placeholder="'+(f.placeholder||f.label)+'" data-fkey="'+f.key+'">';
+        }).join('') +
+        '<div class="item-actions">' +
+          '<button class="danger" data-action="remove" title="Sil"><svg viewBox="0 0 24 24" fill="currentColor" width="16"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg></button>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+  });
+}
+
+/* ===== BIND EVENTS ===== */
+function bindEvents(){
+  // Save section
+  document.querySelectorAll('.btn-save-section').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const parent = btn.closest('.section') || btn.closest('.card');
+      const sectionEl = btn.closest('.section');
+      if(!sectionEl) return;
+      const secId = sectionEl.id.replace('section-','');
+      const section = SECTIONS.find(s => s.id === secId);
+      if(!section) return;
+
+      // Save fields
+      sectionEl.querySelectorAll('[data-key]').forEach(el => {
+        const key = el.dataset.key;
+        let val = el.value;
+        if(el.type === 'datetime-local' && val) val = val + ':00';
+        setNested(data, key, val);
+      });
+
+      // Save toggles
+      sectionEl.querySelectorAll('.toggle[data-key]').forEach(t => {
+        const key = t.dataset.key;
+        setNested(data, key, t.classList.contains('is-on'));
+      });
+
+      // Save simple lists
+      sectionEl.querySelectorAll('.dynamic-list[data-listkey^="simple-"]').forEach(list => {
+        const key = list.dataset.listkey.replace('simple-','');
+        const items = [];
+        list.querySelectorAll('.dynamic-item').forEach(item => {
+          const input = item.querySelector('input');
+          if(input && input.value.trim()) items.push(input.value.trim());
+        });
+        setNested(data, key, items);
+      });
+
+      saveData();
+      showToast('Kaydedildi: '+section.label, 'success');
+    });
+  });
+
+  // Dynamic item add
+  document.querySelectorAll('.btn-add-item').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const secId = btn.dataset.section;
+      const list = btn.closest('.card').querySelector('.dynamic-list');
+      if(!list) return;
+      const section = SECTIONS.find(s => s.id === secId);
+      if(!section) return;
+      const fields = section.fields;
+      const f2Class = fields.length === 2 ? ' fields-2' : '';
+      const div = document.createElement('div');
+      div.className = 'dynamic-item'+f2Class;
+      div.innerHTML = fields.map(f =>
+        f.type === 'textarea'
+          ? '<textarea placeholder="'+(f.placeholder||f.label)+'" data-fkey="'+f.key+'" style="flex:1;min-height:50px"></textarea>'
+          : '<input type="text" value="" placeholder="'+(f.placeholder||f.label)+'" data-fkey="'+f.key+'">'
+      ).join('') +
+      '<div class="item-actions">' +
+        '<button class="danger" data-action="remove" title="Sil"><svg viewBox="0 0 24 24" fill="currentColor" width="16"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg></button>' +
+      '</div>';
+      list.appendChild(div);
+      bindItemRemove(div);
+    });
+  });
+
+  // URL list add
+  document.querySelectorAll('.btn-add-url').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const list = btn.closest('.card').querySelector('.dynamic-list');
+      if(!list) return;
+      const div = document.createElement('div');
+      div.className = 'dynamic-item';
+      div.innerHTML = '<input type="url" value="" placeholder="https://..." style="flex:1">' +
+        '<div class="item-actions">' +
+          '<button class="danger" data-action="remove-simple" title="Sil"><svg viewBox="0 0 24 24" fill="currentColor" width="16"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg></button>' +
+        '</div>';
+      list.appendChild(div);
+      bindItemRemove(div);
+    });
+  });
+
+  // Simple list add
+  document.querySelectorAll('.btn-add-simple').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const list = btn.closest('.card').querySelector('.dynamic-list');
+      if(!list) return;
+      const div = document.createElement('div');
+      div.className = 'dynamic-item';
+      div.innerHTML = '<input type="text" value="" placeholder="'+(btn.dataset.placeholder||'')+'" style="flex:1">' +
+        '<div class="item-actions">' +
+          '<button class="danger" data-action="remove-simple" title="Sil"><svg viewBox="0 0 24 24" fill="currentColor" width="16"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg></button>' +
+        '</div>';
+      list.appendChild(div);
+      bindItemRemove(div);
+    });
+  });
+
+  // Item remove
+  document.querySelectorAll('.dynamic-item .danger').forEach(btn => bindItemRemove(btn.closest('.dynamic-item')));
+
+  // Toggle buttons
+  document.querySelectorAll('.toggle').forEach(t => {
+    t.addEventListener('click', () => t.classList.toggle('is-on'));
+  });
+
+  // Data ops
+  const exportBtn = document.getElementById('exportBtn');
+  if(exportBtn) exportBtn.addEventListener('click', exportData);
+
+  const importBtn = document.getElementById('importBtn');
+  if(importBtn) importBtn.addEventListener('click', importData);
+
+  const resetBtn = document.getElementById('resetBtn');
+  if(resetBtn) resetBtn.addEventListener('click', resetData);
+}
+
+function bindItemRemove(item){
+  const btn = item.querySelector('.danger');
+  if(btn) btn.addEventListener('click', () => item.remove());
+}
+
+/* ===== EXPORT ===== */
+function exportData(){
+  saveFromLists();
+  const json = JSON.stringify(data, null, 2);
+  const blob = new Blob([json], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'data.json';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast('JSON dosyası indirildi.', 'success');
+}
+
+/* ===== IMPORT ===== */
+function importData(){
+  const file = document.getElementById('importFile').files[0];
+  if(!file){showToast('Lütfen bir dosya seçin.', 'error');return}
+  const reader = new FileReader();
+  reader.onload = e => {
+    try{
+      const imported = JSON.parse(e.target.result);
+      data = imported;
+      saveData();
+      location.reload();
+    }catch(err){
+      showToast('Geçersiz JSON dosyası.', 'error');
+    }
+  };
+  reader.readAsText(file);
+}
+
+/* ===== RESET ===== */
+function resetData(){
+  if(!confirm('Tüm veriler sıfırlanacak! Bu işlem geri alınamaz. Devam etmek istiyor musunuz?')) return;
+  if(!confirm('Emin misiniz? Tüm düzenlemeleriniz silinecek.')) return;
+  localStorage.removeItem(STORAGE_KEY);
+  location.reload();
+}
+
+/* ===== SAVE FROM LISTS TO DATA ===== */
+function saveFromLists(){
+  // Gallery URLs
+  const galleryList = document.querySelector('.dynamic-list[data-listkey="gallery_urls"]');
+  if(galleryList){
+    const urls = [];
+    galleryList.querySelectorAll('.dynamic-item input').forEach(inp => {
+      if(inp.value.trim()) urls.push(inp.value.trim());
+    });
+    if(!data.galeri) data.galeri = {};
+    data.galeri.fotograflar = urls;
+  }
+  // Program
+  const progList = document.querySelector('.dynamic-list[data-listkey="program"]');
+  if(progList){
+    const items = [];
+    progList.querySelectorAll('.dynamic-item').forEach(item => {
+      const inputs = item.querySelectorAll('input,textarea');
+      const saat = inputs[0]?.value.trim();
+      const baslik = inputs[1]?.value.trim();
+      if(saat && baslik) items.push({saat,baslik});
+    });
+    data.program = items;
+  }
+  // FAQ
+  const faqList = document.querySelector('.dynamic-list[data-listkey="faq"]');
+  if(faqList){
+    const items = [];
+    faqList.querySelectorAll('.dynamic-item').forEach(item => {
+      const inputs = item.querySelectorAll('input,textarea');
+      const soru = inputs[0]?.value.trim();
+      const cevap = inputs[1]?.value.trim();
+      if(soru && cevap) items.push({soru,cevap});
+    });
+    data.sss = items;
+  }
+  // Simple lists
+  document.querySelectorAll('.dynamic-list[data-listkey^="simple-"]').forEach(list => {
+    const key = list.dataset.listkey.replace('simple-','');
+    const items = [];
+    list.querySelectorAll('.dynamic-item input').forEach(inp => {
+      if(inp.value.trim()) items.push(inp.value.trim());
+    });
+    setNested(data, key, items);
+  });
+}
+
+/* ===== TOAST ===== */
+function showToast(msg, type){
+  const container = document.getElementById('toastContainer');
+  const toast = document.createElement('div');
+  toast.className = 'toast '+(type||'');
+  toast.textContent = msg;
+  container.appendChild(toast);
+  setTimeout(() => {toast.style.opacity='0';toast.style.transition='opacity .3s';setTimeout(()=>toast.remove(),300)}, 2000);
+}
+
+/* ===== LOGIN ===== */
+function checkLogin(){
+  const saved = sessionStorage.getItem(LOGIN_KEY);
+  if(saved === '1') return true;
+  return false;
+}
+
+function doLogin(){
+  sessionStorage.setItem(LOGIN_KEY, '1');
+  document.getElementById('loginScreen').classList.add('is-hidden');
+  document.getElementById('adminWrap').classList.add('is-visible');
+}
+
+function doLogout(){
+  sessionStorage.removeItem(LOGIN_KEY);
+  document.getElementById('loginScreen').classList.remove('is-hidden');
+  document.getElementById('adminWrap').classList.remove('is-visible');
+  document.getElementById('loginPass').value = '';
+}
+
+/* ===== INIT ===== */
+async function init(){
+  if(!checkLogin()){
+    document.getElementById('loginBtn').addEventListener('click', () => {
+      const pass = document.getElementById('loginPass').value;
+      if(pass === PASSWORD){
+        doLogin();
+        bootAdmin();
+      } else {
+        document.getElementById('loginError').style.display = 'block';
+        setTimeout(()=>document.getElementById('loginError').style.display='none',2000);
+      }
+    });
+    document.getElementById('loginPass').addEventListener('keydown', e => {
+      if(e.key === 'Enter') document.getElementById('loginBtn').click();
+    });
+  } else {
+    doLogin();
+    bootAdmin();
+  }
+
+  document.getElementById('logoutBtn').addEventListener('click', doLogout);
+
+  // Hamburger
+  document.getElementById('hamburgerBtn').addEventListener('click', () => {
+    document.getElementById('sidebar').classList.toggle('is-open');
+  });
+}
+
+async function bootAdmin(){
+  data = await loadData();
+  renderSidebar();
+  renderContent();
+  populateDynamicLists();
+  bindEvents();
+
+  // Activate first section
+  const firstSidebar = document.querySelector('.sidebar-item');
+  if(firstSidebar){
+    firstSidebar.classList.add('is-active');
+    const firstSec = document.getElementById('section-'+firstSidebar.dataset.section);
+    if(firstSec) firstSec.classList.add('is-active');
+  }
+}
+
+document.addEventListener('DOMContentLoaded', init);
+})();
+</script>
+</body>
+</html>

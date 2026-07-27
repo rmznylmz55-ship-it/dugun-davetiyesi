@@ -1,0 +1,98 @@
+﻿{
+  "meta": {
+    "versiyon": "1.0",
+    "baslik": "Dugun Davetiyesi",
+    "dil": "tr-TR",
+    "tema": "gece-uzay",
+    "olusturma_tarihi": "2026-07-27"
+  },
+  "besmele": "Bismillahirrahmanirrahim",
+  "ayet": {
+    "metin": "Ve min kulli sey'in halakna zevceyni leallekum tezekkerun",
+    "meal": "Biz her seyi cift cift yarattik ki dusunesiniz.",
+    "sure": "Zariyat Suresi, 49. Ayet"
+  },
+  "dualar": [
+    "Allah bu iki gencimizin hayatini birlestirsin, birbirlerine es ve dost eylesin.",
+    "Evliliklerini hayirli, ugurlu, bereketli ve omur boyu mesut eylesin.",
+    "Bir yastikta yaslansinlar, hayirli evlatlar yetistirsinler.",
+    "Aralarina sevgi, saygi ve merhamet doldursun."
+  ],
+  "etkinlik_turu": "Dugun Toreni",
+  "davet_sahibi_isimleri": "Ayse & Ahmet",
+  "ana_baslik": "Kaderin yildizlarinin birlestirdigi bu gecede sizleri aramizda gormek isteriz.",
+  "davet_metni": "Rabbimizin huzurunda birbirimize es olmaya soz verdigimiz bu mukaddes yolculukta, mutlulugumuzu sizlerle paylasmak icin sabirsizlaniyoruz.",
+  "gelin": {
+    "ad": "Ayse",
+    "soyad": "Yilmaz",
+    "anne": "Meryem",
+    "baba": "Mustafa"
+  },
+  "damat": {
+    "ad": "Ahmet",
+    "soyad": "Kaya",
+    "anne": "Fatma",
+    "baba": "Ali"
+  },
+  "aileler": "Meryem & Mustafa Yilmaz - Fatma & Ali Kaya",
+  "tarih": "2026-09-12T19:00:00",
+  "gun": "Cumartesi",
+  "mekan": {
+    "adi": "Kir Bahcesi Ruya Salonu",
+    "adres": "Ataturk Mahallesi, Sahil Yolu Caddesi No:45, Samsun",
+    "harita_linki": "https://maps.google.com",
+    "kiyafet_kodu": "Semi-Formal / Beyaz Konsept"
+  },
+  "program": [
+    {"saat": "16:00", "baslik": "Camide Nikah Merasimi"},
+    {"saat": "18:00", "baslik": "Gelin Alma"},
+    {"saat": "19:00", "baslik": "Salona Giris & Karsilama"},
+    {"saat": "19:30", "baslik": "Nikah Toreni"},
+    {"saat": "20:30", "baslik": "Taki Toreni"},
+    {"saat": "21:00", "baslik": "Yemek ve Ikram"},
+    {"saat": "22:00", "baslik": "Eglence Programi"},
+    {"saat": "23:30", "baslik": "Kapanis / After Party"}
+  ],
+  "galeri": {
+    "fotograflar": [
+      "https://picsum.photos/400/300?random=1",
+      "https://picsum.photos/400/300?random=2",
+      "https://picsum.photos/400/300?random=3",
+      "https://picsum.photos/400/300?random=4",
+      "https://picsum.photos/400/300?random=5",
+      "https://picsum.photos/400/300?random=6"
+    ],
+    "akis_hizi": "normal"
+  },
+  "arka_plan": {
+    "tip": "image",
+    "url": "https://picsum.photos/1920/1080"
+  },
+  "muzik": {
+    "url": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
+  },
+  "sss": [
+    {
+      "soru": "Otopark ve vale hizmeti var mi?",
+      "cevap": "Evet, mekanimiza ait 200 araclik ucretsiz otopark ve vale mevcuttur."
+    },
+    {
+      "soru": "Cocuklar icin oyun alani bulunuyor mu?",
+      "cevap": "Evet, cocuk oyun alani ve cocuk animatoru mevcuttur."
+    },
+    {
+      "soru": "Yemek menusu icerigi nedir?",
+      "cevap": "Beyaz et ana menu, ordovr tabagi ve sinirsiz mesrubat servisi vardir."
+    },
+    {
+      "soru": "Camideki nikaha katilim zorunlu mu?",
+      "cevap": "Camideki nikah merasimimize katilim tamamen istege baglidir."
+    }
+  ],
+  "rsvp": {
+    "son_tarih": "2026-09-01",
+    "secenekler": ["Katllyorum", "Katilamiyorum", "Kisi Sayisi Belirtecegim"],
+    "alerji_menusu_aktif": true,
+    "hashtag": "#AyseAhmetEvleniyor"
+  }
+}
