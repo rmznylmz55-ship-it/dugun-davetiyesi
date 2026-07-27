@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="900" viewBox="0 0 600 900">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0A0E1A"/>
+      <stop offset="50%" stop-color="#111827"/>
+      <stop offset="100%" stop-color="#0A0E1A"/>
+    </linearGradient>
+    <linearGradient id="goldLine" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="transparent"/>
+      <stop offset="50%" stop-color="#D4A84B"/>
+      <stop offset="100%" stop-color="transparent"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="40%" r="50%">
+      <stop offset="0%" stop-color="rgba(212,168,75,0.08)"/>
+      <stop offset="100%" stop-color="transparent"/>
+    </radialGradient>
+  </defs>
+  <rect width="600" height="900" fill="url(#bg)"/>
+  <rect width="600" height="900" fill="url(#glow)"/>
+
+  <!-- Stars -->
+  <g fill="#D4A84B" opacity="0.6">
+    <polygon points="300,80 304,95 320,95 307,104 311,119 300,110 289,119 293,104 280,95 296,95" opacity="0.8"/>
+    <polygon points="120,150 123,160 134,160 125,167 128,178 120,172 112,178 115,167 106,160 117,160" opacity="0.4"/>
+    <polygon points="480,140 483,150 494,150 485,157 488,168 480,162 472,168 475,157 466,150 477,150" opacity="0.4"/>
+    <polygon points="200,200 202,206 209,206 203,210 205,217 200,213 195,217 197,210 191,206 198,206" opacity="0.3"/>
+    <polygon points="410,180 412,186 419,186 413,190 415,197 410,193 405,197 407,190 401,186 408,186" opacity="0.3"/>
+    <polygon points="90,300 92,306 99,306 93,310 95,317 90,313 85,317 87,310 81,306 88,306" opacity="0.25"/>
+    <polygon points="510,280 512,286 519,286 513,290 515,297 510,293 505,297 507,290 501,286 508,286" opacity="0.25"/>
+    <polygon points="150,400 152,406 159,406 153,410 155,417 150,413 145,417 147,410 141,406 148,406" opacity="0.2"/>
+    <polygon points="450,380 452,386 459,386 453,390 455,397 450,393 445,397 447,390 441,386 448,386" opacity="0.2"/>
+  </g>
+
+  <!-- Decorative lines top -->
+  <rect x="200" y="120" width="200" height="1" fill="url(#goldLine)" opacity="0.5"/>
+  <rect x="230" y="125" width="140" height="0.5" fill="url(#goldLine)" opacity="0.3"/>
+
+  <!-- Couple names -->
+  <text x="300" y="320" text-anchor="middle" font-family="Georgia, serif" font-size="42" fill="#F5D68A" font-weight="400">
+    Ayşe
+  </text>
+  <text x="300" y="345" text-anchor="middle" font-family="Georgia, serif" font-size="18" fill="#D4A84B" opacity="0.7">
+    &amp;
+  </text>
+  <text x="300" y="380" text-anchor="middle" font-family="Georgia, serif" font-size="42" fill="#F5D68A" font-weight="400">
+    Ahmet
+  </text>
+
+  <!-- Gold divider -->
+  <rect x="220" y="410" width="160" height="1" fill="url(#goldLine)" opacity="0.6"/>
+  <circle cx="300" cy="410.5" r="3" fill="#D4A84B" opacity="0.8"/>
+
+  <!-- Event title -->
+  <text x="300" y="455" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#8A9BB5" letter-spacing="6" font-weight="300">
+    DÜĞÜN TÖRENİ
+  </text>
+
+  <!-- Heart icon -->
+  <g transform="translate(300,500)" fill="#D4A84B" opacity="0.5">
+    <path d="M0,15 C-10,5 -20,0 -20,-8 C-20,-16 -12,-20 -6,-16 C0,-12 0,-5 0,-5 C0,-5 0,-12 6,-16 C12,-20 20,-16 20,-8 C20,0 10,5 0,15Z"/>
+  </g>
+
+  <!-- Date -->
+  <text x="300" y="560" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#8A9BB5" letter-spacing="4" font-weight="300">
+    12 EYLÜL 2026
+  </text>
+
+  <!-- Bottom line -->
+  <rect x="200" y="620" width="200" height="1" fill="url(#goldLine)" opacity="0.3"/>
+
+  <!-- Footer -->
+  <text x="300" y="820" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#8A9BB5" opacity="0.4" letter-spacing="3">
+    #AyseAhmetEvleniyor
+  </text>
+</svg>

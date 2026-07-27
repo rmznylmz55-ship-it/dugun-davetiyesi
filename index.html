@@ -8,12 +8,13 @@
 <meta property="og:description" content="12 Eylül 2026 Cumartesi - Kır Bahçesi Rüya Salonu, Samsun. Bu mutlu günümüzde sizleri aramızda görmekten onur duyarız.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="">
-<meta property="og:image" content="https://picsum.photos/600/900?random=1">
+<meta property="og:image" content="https://rmznylmz55-ship-it.github.io/dugun-davetiyesi/og-image.svg">
 <meta property="og:image:width" content="600">
 <meta property="og:image:height" content="900">
-<meta name="twitter:card" content="summary_large_image">
+<meta property="og:url" content="https://rmznylmz55-ship-it.github.io/dugun-davetiyesi/">
+<meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Ayşe &amp; Ahmet Evleniyor">
-<meta name="twitter:description" content="12 Eylül 2026 Cumartesi - Kır Bahçesi Rüya Salonu, Samsun. Düğün davetiyesi.">
+<meta name="twitter:description" content="12 Eylül 2026 - Kır Bahçesi Rüya Salonu, Samsun. Mutluluğumuzu paylaşmak için sabırsızlanıyoruz.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Raleway:wght@200;300;400;500&family=Amiri:ital@0;1&display=swap" rel="stylesheet">
@@ -1328,6 +1329,7 @@ function updateOGMeta(data){
   }
   document.querySelector('meta[property="og:image:width"]').content = '600';
   document.querySelector('meta[property="og:image:height"]').content = '900';
+  document.querySelector('meta[property="og:url"]').content = window.location.href;
 }
 
 document.addEventListener('DOMContentLoaded', init);
