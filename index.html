@@ -8,7 +8,7 @@
 <meta property="og:description" content="12 Eylül 2026 Cumartesi - Kır Bahçesi Rüya Salonu, Samsun. Bu mutlu günümüzde sizleri aramızda görmekten onur duyarız.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="">
-<meta property="og:image" content="https://rmznylmz55-ship-it.github.io/dugun-davetiyesi/og-image.svg">
+<meta property="og:image" content="https://picsum.photos/seed/wedding/600/900">
 <meta property="og:image:width" content="600">
 <meta property="og:image:height" content="900">
 <meta property="og:url" content="https://rmznylmz55-ship-it.github.io/dugun-davetiyesi/">
@@ -1324,7 +1324,7 @@ function updateOGMeta(data){
   document.querySelector('meta[property="og:url"]').content = window.location.href;
 
   const photos = data.galeri?.fotograflar || data['10_fotograf_listesi_marquee'] || [];
-  if(photos.length){
+  if(photos.length && photos[0].match(/^https?:\/\//)){
     document.querySelector('meta[property="og:image"]').content = photos[0];
   }
   document.querySelector('meta[property="og:image:width"]').content = '600';
